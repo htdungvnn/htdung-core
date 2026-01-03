@@ -1,4 +1,4 @@
-[package]
+    [package]
 name = "auth-service"
 version = "0.1.0"
 edition = "2021"
@@ -16,5 +16,5 @@ argon2 = "0.5"
 jsonwebtoken = "9"
 
 serde = { version = "1", features = ["derive"] }
-dotenvy = "0.15"
+dotenvy = "0.15"    
 thiserror = "1"
