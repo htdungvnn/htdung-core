@@ -1,0 +1,47 @@
+version: "3.9"
+
+networks:
+  auth-net:
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: auth-postgres
+    environment:
+      POSTGRES_USER: authuser
+      POSTGRES_PASSWORD: authpass
+      POSTGRES_DB: authdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - auth-net
+
+  auth-service:
+    build: ./auth-service
+    container_name: auth-service
+    environment:
+      DATABASE_URL: postgres://authuser:authpass@postgres:5432/authdb
+      JWT_SECRET: super-secret-key
+    depends_on:
+      - postgres
+    ports:
+      - "50051:50051"
+    networks:
+      - auth-net
+
+  web-client:
+    build: ./web-client
+    container_name: web-client
+    environment:
+      AUTH_GRPC_URL: auth-service:50051
+    depends_on:
+      - auth-service
+    ports:
+      - "3000:3000"
+    networks:
+      - auth-net
+
+volumes:
+  postgres_data:

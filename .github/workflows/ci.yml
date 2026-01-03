@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+
+jobs:
+  auth-service:
+    name: Auth Service (Rust)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: auth-service
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo
+            target
+          key: cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Build
+        run: cargo build --release
+
+      - name: Test
+        run: cargo test
+
+  web-client:
+    name: Web Client (Next.js)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web-client
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: "npm"
+          cache-dependency-path: web-client/package-lock.json
+
+      - name: Install
+        run: npm install
+
+      - name: Build
+        run: npm run build
