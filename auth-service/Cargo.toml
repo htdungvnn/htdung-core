@@ -1,20 +1,39 @@
-    [package]
+[package]
 name = "auth-service"
 version = "0.1.0"
 edition = "2021"
 
+# ----------------------------
+# Runtime dependencies
+# ----------------------------
 [dependencies]
-tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+tokio = { version = "1.37", features = ["macros", "rt-multi-thread"] }
 
+# gRPC
 tonic = "0.11"
 prost = "0.12"
 
-sqlx = { version = "0.7", features = ["postgres", "runtime-tokio", "uuid"] }
+# Database
+sqlx = { version = "0.7", features = [
+    "postgres",
+    "runtime-tokio",
+    "uuid",
+    "macros"
+] }
+
 uuid = { version = "1", features = ["v4"] }
 
+# Security
 argon2 = "0.5"
 jsonwebtoken = "9"
 
+# Serialization / config / errors
 serde = { version = "1", features = ["derive"] }
-dotenvy = "0.15"    
+dotenvy = "0.15"
 thiserror = "1"
+
+# ----------------------------
+# Build dependencies (for gRPC)
+# ----------------------------
+[build-dependencies]
+tonic-build = "0.11"

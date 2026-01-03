@@ -1,4 +1,9 @@
 FROM rust:1.92 AS builder
+
+RUN apt-get update && apt-get install -y \
+    protobuf-compiler \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 COPY . .
 RUN cargo build --release

@@ -1,5 +1,6 @@
-use jsonwebtoken::*;
-use serde::{Serialize, Deserialize};
+use jsonwebtoken::errors::Error;
+use jsonwebtoken::{decode as jwt_decode, encode, DecodingKey, EncodingKey, Header, Validation};
+use serde::{Deserialize, Serialize};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 #[derive(Serialize, Deserialize)]
@@ -11,7 +12,10 @@ pub struct Claims {
 
 pub fn create(user_id: &str, role: &str, secret: &str) -> String {
     let exp = SystemTime::now()
-        .duration_since(UNIX_EPOCH).unwrap().as_secs() + 3600;
+        .duration_since(UNIX_EPOCH)
+        .unwrap()
+        .as_secs()
+        + 3600;
 
     encode(
         &Header::default(),
@@ -21,13 +25,15 @@ pub fn create(user_id: &str, role: &str, secret: &str) -> String {
             exp: exp as usize,
         },
         &EncodingKey::from_secret(secret.as_ref()),
-    ).unwrap()
+    )
+    .unwrap()
 }
 
 pub fn decode(token: &str, secret: &str) -> Result<Claims, Error> {
-    decode::<Claims>(
+    jwt_decode::<Claims>(
         token,
         &DecodingKey::from_secret(secret.as_ref()),
         &Validation::default(),
-    ).map(|d| d.claims)
+    )
+    .map(|data| data.claims)
 }

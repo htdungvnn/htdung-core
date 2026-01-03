@@ -1,4 +1,3 @@
-use sqlx::PgPool;
 use crate::db::user_repo::UserRepo;
 
 #[derive(Clone)]
