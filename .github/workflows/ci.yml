@@ -40,13 +40,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node (LTS only)
+        uses: actions/setup-node@v4
         with:
-          node-version: 25
-          cache: "npm"
-          cache-dependency-path: web-client/package-lock.json
+          node-version: "25"
 
-      - name: Install
+      - name: Verify Node version
+        run: node --version
+
+      - name: Install dependencies
         run: npm install
 
       - name: Build
